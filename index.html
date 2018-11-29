@@ -33,13 +33,17 @@
         {
             block[i] = [];
             keys[i] = [];
-            for (var j = 0; j < rows; j++)
+            for (var j = 0; j <= rows; j++)
             {
                 block[i][j] = { x: 0, y: 0}; 
                 keys[i][j] = false;  
             }
         }
-        alert(keys);
+        //fill the raw with (key = true) that we will not render
+        for(var i = 0; i < columns; i++)
+        {
+            keys[i][rows] = true;
+        }
   
         function DrawBlock()
         {
@@ -47,7 +51,7 @@
             for (var i = 0; i < columns; i++)
             {
                 for (var j = 0; j < rows; j++) 
-                {
+                {  //offset works correctly with any size of block
                     var offsetX = x + i * (blockSize + 1);
                     var offsetY = y + j * (blockSize + 1);
                    
@@ -68,7 +72,7 @@
             }    
         }
        
-        function KeySwitch(block,bX,bY, key, columns, rows, cases)
+        function KeySwitcher(block,bX, bY, key, columns, rows, cases)
         {   
             
             for (i = 0; i < columns; i++)     
@@ -107,15 +111,18 @@
             ctx.rect(block[bX + 1][bY].x, block[bX + 1][bY].y, blockSize, blockSize);
             ctx.rect(block[bX][bY + 1].x, block[bX][bY + 1].y, blockSize, blockSize);
             ctx.rect(block[bX + 1][bY + 1].x, block[bX + 1][bY + 1].y, blockSize, blockSize);     
-            KeySwitch(block, bX, bY, keys, columns, rows, 1);   
+            KeySwitcher(block, bX, bY, keys, columns, rows, 1);   
             ctx.fillStyle = "green";
             ctx.fill();
-            ctx.closePath();
+
+            
             bY += 1;
+            ctx.closePath();
+         
             
         }
         //#endregion
-        
+        console.log(keys);
     
     function draw()
     {
