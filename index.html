@@ -24,20 +24,26 @@
     var blockSize = 12;
     //offset by rows 
     var bX = Math.round(rows / 2);
+    //offset by columns
     var bY = 0;
+    var keys = [];
+    
     
         for (var i = 0; i < columns; i++)
         {
             block[i] = [];
+            keys[i] = [];
             for (var j = 0; j < rows; j++)
             {
-                block[i][j] = { x: 0, y: 0};   
+                block[i][j] = { x: 0, y: 0}; 
+                keys[i][j] = false;  
             }
         }
-    
+        alert(keys);
   
         function Drawblock()
         {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             for (var i = 0; i < columns; i++)
             {
                 for (var j = 0; j < rows; j++) 
@@ -55,27 +61,49 @@
                     ctx.fillStyle = "white";
                     ctx.fill();  
                     ctx.closePath();
-                 
+                   
                     
                   
                 }     
             }    
         }
        
+        function KeySwitch(table, block, key, bX, bY, cases)
+        {   
+            keys = false;
+            switch(cases)
+            {
+                case '1': // cube 2x2
+                if (table[bX][bY] == block[bX][bY])
+                {
+                    key[bX][bY] = true;
+                }
+
+                if (table[bX + 1][bY])
+            }
+        }
+
+
         //#region block define
         function BlockDefine()
         {   
+            
+
+            
             //creating tetris cube: 2x2
             ctx.beginPath();
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          /*  if (block[bX][bY + 1].y == block[bX][columns].y)
+            {   
+                console.log("Block coord - ",block[bX][bY + 1].y);
+                console.log("Pattern coord -",block[bX][columns].y);
+                console.log(block[bX][bY + 1].x);
+                console.log(block[bX][columns].x);
+                
+            } */
             ctx.rect(block[bX][bY].x, block[bX][bY].y, blockSize, blockSize);
             ctx.rect(block[bX + 1][bY].x, block[bX + 1][bY].y, blockSize, blockSize);
             ctx.rect(block[bX][bY + 1].x, block[bX][bY + 1].y, blockSize, blockSize);
-            ctx.rect(block[bX + 1][bY + 1].x, block[bX + 1][bY + 1].y, blockSize, blockSize);
-             if (block[bX][bY + 1].y == block[bX][rows - 1].y)
-            {   
-                
-            } 
+            ctx.rect(block[bX + 1][bY + 1].x, block[bX + 1][bY + 1].y, blockSize, blockSize);          
             ctx.fillStyle = "green";
             ctx.fill();
             ctx.closePath();
@@ -91,7 +119,7 @@
         BlockDefine();
         
     }
-    setInterval(draw,100);
+    setInterval(draw,1000);
 </script>
 
 </body>
