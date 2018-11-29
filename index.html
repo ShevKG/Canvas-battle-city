@@ -56,40 +56,42 @@
                     ctx.fill();  
                     ctx.closePath();
                  
-
-
-
-                    //creating tetris cube: 2x2
-                    ctx.beginPath();
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.rect(block[bX][bY].x, block[bX][bY].y, blockSize, blockSize);
-                    ctx.rect(block[bX + 1][bY].x, block[bX + 1][bY].y, blockSize, blockSize);
-                    ctx.rect(block[bX][bY + 1].x, block[bX][bY + 1].y, blockSize, blockSize);
-                    ctx.rect(block[bX + 1][bY + 1].x, block[bX + 1][bY + 1].y, blockSize, blockSize);
-                       if (block[bX][bY + 1].y == block[bX][rows - 1].y)
-                          {   
+                    
+                  
+                }     
+            }    
+        }
+       
+        //#region block define
+        function BlockDefine()
+        {   
+            //creating tetris cube: 2x2
+            ctx.beginPath();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.rect(block[bX][bY].x, block[bX][bY].y, blockSize, blockSize);
+            ctx.rect(block[bX + 1][bY].x, block[bX + 1][bY].y, blockSize, blockSize);
+            ctx.rect(block[bX][bY + 1].x, block[bX][bY + 1].y, blockSize, blockSize);
+            ctx.rect(block[bX + 1][bY + 1].x, block[bX + 1][bY + 1].y, blockSize, blockSize);
+             if (block[bX][bY + 1].y == block[bX][rows - 1].y)
+            {   
                 
-                          } 
+            } 
             ctx.fillStyle = "green";
             ctx.fill();
             ctx.closePath();
             bY += 1;
             
-   
-                }     
-            }    
         }
-       
-     
+        //#endregion
         
-    setInterval(Drawblock, 100);
+    
     function draw()
     {
         Drawblock();
         BlockDefine();
         
     }
-    draw();
+    setInterval(draw,100);
 </script>
 
 </body>
