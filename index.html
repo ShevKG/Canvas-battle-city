@@ -80,7 +80,7 @@
             }    
         }
        
-        function KeySwitcher(block,bX, bY, key, columns, raws, cases)
+        function KeySwitcher(block,bX, bY, container, columns, raws, cases)
         {   
             
             for (i = 0; i < columns; i++)     
@@ -93,12 +93,13 @@
                               //              ◙◙
                         if (block[bX][bY] == block[i][j] || block[bX + 1][bY] == block[i][j] || block[bX][bY + 1] == block[i][j] || block[bX + 1][bY + 1] == block[i][j])
                          {
-                               key[i][j] = true;
+                               container[i][j] = true;
+                               console.log("true");
                          }
                          
                         else
                          {
-                             key[i][j] = false;
+                             container[i][j] = false;
                          }
                      
                         break;
@@ -106,11 +107,11 @@
 
                          if (block[bX][bY] == block[i][j] || block[bX][bY + 1] == block[i][j] || block[bX][bY + 2] == block[i][j] || block[bX][bY + 3] == block[i][j])
                          {
-                             key[i][j] = true;
+                             container[i][j] = true;
                          }
                          else
                          {
-                             key[i][j] = false;
+                             container[i][j] = false;
                          }
                    }
                 }
@@ -127,14 +128,14 @@
                     ctx.rect(block[bX + 1][bY].x, block[bX + 1][bY].y, blockSize, blockSize);
                     ctx.rect(block[bX][bY + 1].x, block[bX][bY + 1].y, blockSize, blockSize);
                     ctx.rect(block[bX + 1][bY + 1].x, block[bX + 1][bY + 1].y, blockSize, blockSize);     
-                    KeySwitcher(block, bX, bY, keys, columns, raws, cases);   
+                    KeySwitcher(block, bX, bY, container, columns, raws, cases);   
                     ctx.fillStyle = "green";
                     ctx.fill();
                     ctx.closePath();
                     //check if our blocks at the bottom raw
-                    if (keys[bX][bY + 2] == true || keys[bX + 1][bY + 2])
+                    if (keys[bX][bY + 2] == true || keys[bX + 1][bY + 2] == true)
                     {
-
+                        FillContainer();
                         break;    
                     }  
                     else
@@ -151,9 +152,10 @@
                     ctx.rect(block[bX][bY + 3].x, block[bX][bY + 3].y, blockSize, blockSize);
                     ctx.fillStyle = "red";
                     ctx.fill();
-                    KeySwitcher(block, bX, bY, keys, columns, raws, cases);
+                    KeySwitcher(block, bX, bY, container, columns, raws, cases);
                     if (keys[bX][bY + 4] == true)
                     {
+                        FillContainer();
                         break;
                     }
                     else
@@ -173,14 +175,14 @@
                    {
                     ctx.beginPath();
                     ctx.rect(block[i][j].x, block[i][j].y, blockSize, blockSize);
-                    ctx.fillStyle = "green";
+                    ctx.fillStyle = "red";
                     ctx.fill();
                     ctx.closePath();
+                   
                    }
                }
            }
        }
-    
     function draw()
     {
         DrawBlock();
@@ -193,9 +195,17 @@
   ///////////////////////////////////////////////////////////////////////////////////////////////////
  //                                    ****NOT THE MAIN FUNCTIONS****                             //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-    function FillTable(container, block, bX, bY, cases)
+    function FillContainer()
     {  
-        
+        for (var i = 0; i < columns; i++)
+        {
+            for (var j = 0; j < raws; j++)
+            {
+                if(container[i][j] == true)
+                keys[i][j] = true;
+                
+            }
+        }
     }
 
     function TestFunc()
