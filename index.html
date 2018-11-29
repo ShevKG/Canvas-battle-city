@@ -21,9 +21,9 @@
     var x = canvas.width / 4;
     var y = canvas.height / 10;
     var block = [];
-    var blockSize = 12;
+    var blockSize = 20;
     //offset by rows 
-    var bX = Math.round(rows / 2);
+    var bX = Math.round(rows / 4);
     //offset by columns
     var bY = 0;
     var keys = [];
@@ -41,7 +41,7 @@
         }
         alert(keys);
   
-        function Drawblock()
+        function DrawBlock()
         {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             for (var i = 0; i < columns; i++)
@@ -68,42 +68,46 @@
             }    
         }
        
-        function KeySwitch(table, block, key, bX, bY, cases)
+        function KeySwitch(block,bX,bY, key, columns, rows, cases)
         {   
-            keys = false;
-            switch(cases)
+            
+            for (i = 0; i < columns; i++)     
             {
-                case '1': // cube 2x2
-                if (table[bX][bY] == block[bX][bY])
+                for (j = 0; j < rows; j++)
                 {
-                    key[bX][bY] = true;
+                    switch(cases)
+                    {
+                      case 1: // square 2x2
+                        
+                        if (block[bX][bY] == block[i][j] || block[bX + 1][bY] == block[i][j] || block[bX][bY + 1] == block[i][j] || block[bX + 1][bY + 1] == block[i][j])
+                         {
+                               key[i][j] = true;
+                               console.log("true");
+                         }
+                         
+                        else
+                         {
+                             key[i][j] = false;
+                             console.log("false");
+                         }
+                     
+                        break;
+                   }
                 }
-
-                if (table[bX + 1][bY])
             }
-        }
+    }
 
 
         //#region block define
         function BlockDefine()
         {   
-            
-
-            
-            //creating tetris cube: 2x2
+            //creating tetris square: 2x2
             ctx.beginPath();
-          /*  if (block[bX][bY + 1].y == block[bX][columns].y)
-            {   
-                console.log("Block coord - ",block[bX][bY + 1].y);
-                console.log("Pattern coord -",block[bX][columns].y);
-                console.log(block[bX][bY + 1].x);
-                console.log(block[bX][columns].x);
-                
-            } */
             ctx.rect(block[bX][bY].x, block[bX][bY].y, blockSize, blockSize);
             ctx.rect(block[bX + 1][bY].x, block[bX + 1][bY].y, blockSize, blockSize);
             ctx.rect(block[bX][bY + 1].x, block[bX][bY + 1].y, blockSize, blockSize);
-            ctx.rect(block[bX + 1][bY + 1].x, block[bX + 1][bY + 1].y, blockSize, blockSize);          
+            ctx.rect(block[bX + 1][bY + 1].x, block[bX + 1][bY + 1].y, blockSize, blockSize);     
+            KeySwitch(block, bX, bY, keys, columns, rows, 1);   
             ctx.fillStyle = "green";
             ctx.fill();
             ctx.closePath();
@@ -115,11 +119,11 @@
     
     function draw()
     {
-        Drawblock();
+        DrawBlock();
         BlockDefine();
         
     }
-    setInterval(draw,1000);
+    setInterval(draw,3000);
 </script>
 
 </body>
