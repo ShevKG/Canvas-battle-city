@@ -16,33 +16,41 @@
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
    
+    var cases = 0;
     var columns = 10;
-    var rows = 15; 
+    var raws = 15; 
     var x = canvas.width / 4;
     var y = canvas.height / 10;
+   
     var block = [];
+    var container = [];
+    var keys = [];
+    
     var blockSize = 20;
-    //offset by rows 
-    var bX = Math.round(rows / 4);
+    //offset by raws 
+    var bX = Math.round(raws / 4);
     //offset by columns
     var bY = 0;
-    var keys = [];
+    
     
     
         for (var i = 0; i < columns; i++)
         {
-            block[i] = [];
-            keys[i] = [];
-            for (var j = 0; j <= rows; j++)
+                block[i] = [];
+            container[i] = [];
+                 keys[i] = [];
+            
+            for (var j = 0; j <= raws; j++)
             {
-                block[i][j] = { x: 0, y: 0}; 
-                keys[i][j] = false;  
+                    block[i][j] = { x: 0, y: 0}; 
+                container[i][j] = false;
+                     keys[i][j] = false;  
             }
         }
         //fill the raw with (key = true) that we will not render
         for(var i = 0; i < columns; i++)
         {
-            keys[i][rows] = true;
+            keys[i][raws] = true;
         }
   
         function DrawBlock()
@@ -50,7 +58,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             for (var i = 0; i < columns; i++)
             {
-                for (var j = 0; j < rows; j++) 
+                for (var j = 0; j < raws; j++) 
                 {  //offset works correctly with any size of block
                     var offsetX = x + i * (blockSize + 1);
                     var offsetY = y + j * (blockSize + 1);
@@ -72,62 +80,129 @@
             }    
         }
        
-        function KeySwitcher(block,bX, bY, key, columns, rows, cases)
+        function KeySwitcher(block,bX, bY, key, columns, raws, cases)
         {   
             
             for (i = 0; i < columns; i++)     
             {
-                for (j = 0; j < rows; j++)
+                for (j = 0; j < raws; j++)
                 {
                     switch(cases)
                     {
-                      case 1: // square 2x2
-                        
+                      case 0: // square 2x2   ◙◙
+                              //              ◙◙
                         if (block[bX][bY] == block[i][j] || block[bX + 1][bY] == block[i][j] || block[bX][bY + 1] == block[i][j] || block[bX + 1][bY + 1] == block[i][j])
                          {
                                key[i][j] = true;
-                               console.log("true");
                          }
                          
                         else
                          {
                              key[i][j] = false;
-                             console.log("false");
                          }
                      
                         break;
+                     case 1: //stick 1x4 ◙◙◙◙
+
+                         if (block[bX][bY] == block[i][j] || block[bX][bY + 1] == block[i][j] || block[bX][bY + 2] == block[i][j] || block[bX][bY + 3] == block[i][j])
+                         {
+                             key[i][j] = true;
+                         }
+                         else
+                         {
+                             key[i][j] = false;
+                         }
                    }
                 }
             }
     }
-        //#region block define
-        function BlockDefine()
+        function BlockDefine(cases)
         {   
-            //creating tetris square: 2x2
-            ctx.beginPath();
-            ctx.rect(block[bX][bY].x, block[bX][bY].y, blockSize, blockSize);
-            ctx.rect(block[bX + 1][bY].x, block[bX + 1][bY].y, blockSize, blockSize);
-            ctx.rect(block[bX][bY + 1].x, block[bX][bY + 1].y, blockSize, blockSize);
-            ctx.rect(block[bX + 1][bY + 1].x, block[bX + 1][bY + 1].y, blockSize, blockSize);     
-            KeySwitcher(block, bX, bY, keys, columns, rows, 1);   
-            ctx.fillStyle = "green";
-            ctx.fill();
-            
-            bY += 1;
-            ctx.closePath();
-         
-            
+            switch(cases)
+            {
+                case 0:
+                    //creating tetris square: 2x2
+                    ctx.beginPath();
+                    ctx.rect(block[bX][bY].x, block[bX][bY].y, blockSize, blockSize);
+                    ctx.rect(block[bX + 1][bY].x, block[bX + 1][bY].y, blockSize, blockSize);
+                    ctx.rect(block[bX][bY + 1].x, block[bX][bY + 1].y, blockSize, blockSize);
+                    ctx.rect(block[bX + 1][bY + 1].x, block[bX + 1][bY + 1].y, blockSize, blockSize);     
+                    KeySwitcher(block, bX, bY, keys, columns, raws, cases);   
+                    ctx.fillStyle = "green";
+                    ctx.fill();
+                    ctx.closePath();
+                    //check if our blocks at the bottom raw
+                    if (keys[bX][bY + 2] == true || keys[bX + 1][bY + 2])
+                    {
+
+                        break;    
+                    }  
+                    else
+                    bY += 1;
+                   
+                    break;
+
+                case 1:
+                    console.log("im here");
+                    ctx.beginPath();
+                    ctx.rect(block[bX][bY].x, block[bX][bY].y, blockSize, blockSize);
+                    ctx.rect(block[bX][bY +1].x, block[bX][bY + 1].y, blockSize, blockSize);
+                    ctx.rect(block[bX][bY + 2].x, block[bX][bY + 2].y, blockSize, blockSize);
+                    ctx.rect(block[bX][bY + 3].x, block[bX][bY + 3].y, blockSize, blockSize);
+                    ctx.fillStyle = "red";
+                    ctx.fill();
+                    KeySwitcher(block, bX, bY, keys, columns, raws, cases);
+                    if (keys[bX][bY + 4] == true)
+                    {
+                        break;
+                    }
+                    else
+                    bY += 1;
+                    break;
+            }
+
         }
-        //#endregion
-        console.log(keys);
+
+       function KeyDraw()
+       {
+           for (var i = 0; i < columns; i++)
+           {
+               for (var j = 0; j < raws; j++)
+               {
+                   if (keys[i][j] == true)
+                   {
+                    ctx.beginPath();
+                    ctx.rect(block[i][j].x, block[i][j].y, blockSize, blockSize);
+                    ctx.fillStyle = "green";
+                    ctx.fill();
+                    ctx.closePath();
+                   }
+               }
+           }
+       }
     
     function draw()
     {
         DrawBlock();
-        BlockDefine();
+        BlockDefine(cases);
+        KeyDraw();
+    }
+    setInterval(draw,300);
+    setInterval(TestFunc, 6000);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+ //                                    ****NOT THE MAIN FUNCTIONS****                             //
+///////////////////////////////////////////////////////////////////////////////////////////////////
+    function FillTable(container, block, bX, bY, cases)
+    {  
         
     }
-    setInterval(draw,3000);
+
+    function TestFunc()
+    {
+       cases = 1;
+       bY = 0;
+    }
 </script>
 
 </body>
