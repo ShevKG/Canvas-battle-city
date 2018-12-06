@@ -12,208 +12,106 @@
 
 <canvas id="myCanvas" width="480" height="480"></canvas>
 
-<script>
-    var canvas = document.getElementById("myCanvas");
-    var ctx = canvas.getContext("2d");
-   
-    var cases = 0;
-    var columns = 10;
-    var raws = 15; 
-    var x = canvas.width / 4;
-    var y = canvas.height / 10;
-   
-    var block = [];
-    var container = [];
-    var keys = [];
-    
-    var blockSize = 20;
-    //offset by raws 
-    var bX = Math.round(raws / 4);
-    //offset by columns
-    var bY = 0;
-    
-    
-    
-        for (var i = 0; i < columns; i++)
-        {
-                block[i] = [];
-            container[i] = [];
-                 keys[i] = [];
-            
-            for (var j = 0; j <= raws; j++)
+<script>  
+        class Character
+        {   
+           
+            renderChar(x, dx, charSize)
             {
-                    block[i][j] = { x: 0, y: 0}; 
-                container[i][j] = false;
-                     keys[i][j] = false;  
+               
+                ctx.beginPath();
+                ctx.rect(x + dx, y + dy, charSize, charSize);
+                ctx.fillStyle = "black";
+                ctx.strokeStyle = "purple";
+                ctx.stroke();
+                ctx.fill();
+                ctx.closePath();
+                //console.log("xuy");
             }
         }
-        //fill the raw with (key = true) that we will not render
-        for(var i = 0; i < columns; i++)
-        {
-            keys[i][raws] = true;
-        }
-  
-        function DrawBlock()
-        {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (var i = 0; i < columns; i++)
-            {
-                for (var j = 0; j < raws; j++) 
-                {  //offset works correctly with any size of block
-                    var offsetX = x + i * (blockSize + 1);
-                    var offsetY = y + j * (blockSize + 1);
-                   
-                    block[i][j].x = offsetX;
-                    block[i][j].y = offsetY;
-                 
-                    ctx.beginPath();
-                    ctx.rect(offsetX, offsetY, blockSize, blockSize);
-                    ctx.strokeStyle = "grey";
-                    ctx.stroke();
-                    ctx.fillStyle = "white";
-                    ctx.fill();  
-                    ctx.closePath();
-                   
-                    
-                  
-                }     
-            }    
-        }
+
+
+        var x = 100;
+        var y = 100;
+        var dx = 0;
+        var dy = 0; 
+        var charSize = 10;
+        var rightPressed = false;
+        var leftPressed = false;
+        var upPressed = false;
+        var downPressed = false;
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        let tank = new Character();
        
-        function KeySwitcher(block,bX, bY, container, columns, raws, cases)
-        {   
-            
-            for (i = 0; i < columns; i++)     
+        document.addEventListener("keydown", keyDownHandler, false);
+        document.addEventListener("keyup", keyUpHandler, false);
+        function keyDownHandler(e)
+        {   //   ArrowRight ↓↓    'D' button   ↓↓
+            if(e.keyCode == 39 || e.keyCode == 68) 
             {
-                for (j = 0; j < raws; j++)
-                {
-                    switch(cases)
-                    {
-                      case 0: // square 2x2   ◙◙
-                              //              ◙◙
-                        if (block[bX][bY] == block[i][j] || block[bX + 1][bY] == block[i][j] || block[bX][bY + 1] == block[i][j] || block[bX + 1][bY + 1] == block[i][j])
-                         {
-                               container[i][j] = true;
-                               console.log("true");
-                         }
-                         
-                        else
-                         {
-                             container[i][j] = false;
-                         }
-                     
-                        break;
-                     case 1: //stick 1x4 ◙◙◙◙
-
-                         if (block[bX][bY] == block[i][j] || block[bX][bY + 1] == block[i][j] || block[bX][bY + 2] == block[i][j] || block[bX][bY + 3] == block[i][j])
-                         {
-                             container[i][j] = true;
-                         }
-                         else
-                         {
-                             container[i][j] = false;
-                         }
-                   }
-                }
+                rightPressed = true;
             }
-    }
-        function BlockDefine(cases)
-        {   
-            switch(cases)
+            //      ArrowLeft    ↓↓  'A' button     ↓↓
+            else if(e.keyCode == 37 || e.keyCode == 65) 
             {
-                case 0:
-                    //creating tetris square: 2x2
-                    ctx.beginPath();
-                    ctx.rect(block[bX][bY].x, block[bX][bY].y, blockSize, blockSize);
-                    ctx.rect(block[bX + 1][bY].x, block[bX + 1][bY].y, blockSize, blockSize);
-                    ctx.rect(block[bX][bY + 1].x, block[bX][bY + 1].y, blockSize, blockSize);
-                    ctx.rect(block[bX + 1][bY + 1].x, block[bX + 1][bY + 1].y, blockSize, blockSize);     
-                    KeySwitcher(block, bX, bY, container, columns, raws, cases);   
-                    ctx.fillStyle = "green";
-                    ctx.fill();
-                    ctx.closePath();
-                    //check if our blocks at the bottom raw
-                    if (keys[bX][bY + 2] == true || keys[bX + 1][bY + 2] == true)
-                    {
-                        FillContainer();
-                        break;    
-                    }  
-                    else
-                    bY += 1;
-                   
-                    break;
-
-                case 1:
-                    console.log("im here");
-                    ctx.beginPath();
-                    ctx.rect(block[bX][bY].x, block[bX][bY].y, blockSize, blockSize);
-                    ctx.rect(block[bX][bY +1].x, block[bX][bY + 1].y, blockSize, blockSize);
-                    ctx.rect(block[bX][bY + 2].x, block[bX][bY + 2].y, blockSize, blockSize);
-                    ctx.rect(block[bX][bY + 3].x, block[bX][bY + 3].y, blockSize, blockSize);
-                    ctx.fillStyle = "red";
-                    ctx.fill();
-                    KeySwitcher(block, bX, bY, container, columns, raws, cases);
-                    if (keys[bX][bY + 4] == true)
-                    {
-                        FillContainer();
-                        break;
-                    }
-                    else
-                    bY += 1;
-                    break;
+                leftPressed = true;
             }
-
-        }
-
-       function KeyDraw()
-       {
-           for (var i = 0; i < columns; i++)
-           {
-               for (var j = 0; j < raws; j++)
-               {
-                   if (keys[i][j] == true)
-                   {
-                    ctx.beginPath();
-                    ctx.rect(block[i][j].x, block[i][j].y, blockSize, blockSize);
-                    ctx.fillStyle = "red";
-                    ctx.fill();
-                    ctx.closePath();
-                   
-                   }
-               }
-           }
-       }
-    function draw()
-    {
-        DrawBlock();
-        BlockDefine(cases);
-        KeyDraw();
-    }
-    setInterval(draw,300);
-    setInterval(TestFunc, 6000);
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////
- //                                    ****NOT THE MAIN FUNCTIONS****                             //
-///////////////////////////////////////////////////////////////////////////////////////////////////
-    function FillContainer()
-    {  
-        for (var i = 0; i < columns; i++)
-        {
-            for (var j = 0; j < raws; j++)
+            //        ArrowUP     ↓↓ 'W' button       ↓↓
+            else if (e.keyCode == 38 ||  e.keyCode == 87)
             {
-                if(container[i][j] == true)
-                keys[i][j] = true;
                 
+                upPressed = true;
+            }
+            //        ArroDOWN   ↓↓  'S' button     ↓↓
+            else if(e.keyCode == 40 || e.keyCode == 83)
+            {
+                downPressed = true;
             }
         }
-    }
 
-    function TestFunc()
-    {
-       cases = 1;
-       bY = 0;
-    }
+        function keyUpHandler(e) 
+        {   //   ArrowRight ↓↓    'D' button   ↓↓
+            if(e.keyCode == 39 || e.keyCode == 68) 
+            {
+                rightPressed = false;
+            }
+            //      ArrowLeft    ↓↓  'A' button     ↓↓
+            else if(e.keyCode == 37 || e.keyCode == 65) 
+            {
+                leftPressed = false;
+            }
+            //        ArrowUP     ↓↓ 'W' button       ↓↓
+            else if (e.keyCode == 38 || e.keyCode == 87)
+            {
+                
+                upPressed = false;
+            }
+            //        ArroDOWN   ↓↓  'S' button     ↓↓
+            else if(e.keyCode == 40 || e.keyCode == 83)
+            {
+                downPressed = false;
+            }
+        }
+
+        function draw()
+            {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if(rightPressed) 
+                {
+                    dx += 1;
+                }
+                else
+                if(leftPressed) 
+                {
+                    console.log("xxx");
+                    dx -= 1;
+                }
+
+            tank.renderChar(x,dx,charSize);     
+        }   
+        setInterval(draw,10);
+       
 </script>
-
 </body>
 </html>
